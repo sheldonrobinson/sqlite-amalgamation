@@ -156,7 +156,7 @@ if(HAVE_LSTAT)
 endif()
 
 check_function_exists(gethostuuid HAVE_GETHOSTUUID)
-if(HAVE_GETHOSTUUID AND NOT ${CMAKE_SYSTEM_NAME} STREQUAL "iOS")
+if(HAVE_GETHOSTUUID AND NOT IOS)
     add_definitions(-DHAVE_GETHOSTUUID=1)
 endif()
 
