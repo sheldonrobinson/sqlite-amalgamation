@@ -403,11 +403,6 @@ if(WIN32)
     set(UUID_LIBRARIES Rpcrt4.lib)
 endif()
 
-if(APPLE)
-    # Universal bianry
-    set(CMAKE_OSX_ARCHITECTURES arm64 x86_64)
-endif()
-
 # Check the user defined sqlite config header file
 check_include_file(sqlite_cfg.h HAVE_SQLITE_CONFIG_H)
 if(HAVE_SQLITE_CONFIG_H)
