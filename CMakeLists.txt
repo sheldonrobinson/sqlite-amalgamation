@@ -38,6 +38,7 @@ option(SQLITE3_OMIT_JSON                 "Omit JSON SQL functions"              
 option(SQLITE3_OMIT_AUTOINIT             "Omit automatic initialization"                  OFF)
 option(SQLITE3_RECOMMENDED_OPTIONS       "Compile by SQLite3 recommended options"         ON)
 option(SQLITE3_USE_URI                   "Enable the default URI filename processing"     OFF)
+option(SQLITE3_INSTALL                   "Install applications and library"          	  OFF)
 if(WIN32)
     option(WIN32_MALLOC              "Use Windows Heap API functions for memory allocation" OFF)
     option(WIN32_HEAP_CREATE         "Force the Win32 native memory allocator"              OFF)
@@ -487,12 +488,13 @@ if(SQLITE3_ENABLE_SHARED)
         OUTPUT_NAME ${PROJECT_NAME}
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_VERSION_MAJOR})
-
-    install(TARGETS sqlite3-shared EXPORT ${PROJECT_NAME}Config
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-    install(FILES ${CMAKE_BINARY_DIR}/${SHAREDLIB_PREFIX}${PROJECT_NAME}.pdb DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
+	if(SQLITE3_INSTALL)
+		install(TARGETS sqlite3-shared EXPORT ${PROJECT_NAME}Config
+			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+			ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+			LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+		install(FILES ${CMAKE_BINARY_DIR}/${SHAREDLIB_PREFIX}${PROJECT_NAME}.pdb DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
+	endif()
 endif()
 
 if(SQLITE3_ENABLE_STATIC)
@@ -504,11 +506,12 @@ if(SQLITE3_ENABLE_STATIC)
     target_include_directories(sqlite3-static PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
     set_target_properties(sqlite3-static PROPERTIES
         OUTPUT_NAME ${PROJECT_NAME}${NAME_FIX_DECORATOR})
-
-    install(TARGETS sqlite3-static EXPORT ${PROJECT_NAME}Config
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+	if(SQLITE3_INSTALL)
+		install(TARGETS sqlite3-static EXPORT ${PROJECT_NAME}Config
+			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+			ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+			LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+	endif()
 endif()
 
 if(SQLITE3_BUILD_SHELL)
@@ -537,25 +540,28 @@ if(SQLITE3_BUILD_SHELL)
             set(${flag} "${${flag}}" CACHE STRING "msvc flags" FORCE)
         endforeach()
     endif()
-
-    install(TARGETS sqlite3 EXPORT ${PROJECT_NAME}Config
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-    install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pdb DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
+	if(SQLITE3_INSTALL)
+		install(TARGETS sqlite3 EXPORT ${PROJECT_NAME}Config
+			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+			ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+			LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+		install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pdb DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
+	endif()
 endif()
 
 configure_file(sqlite3_config.h.in ${CMAKE_BINARY_DIR}/sqlite3_config.h)
 
-install(EXPORT  ${PROJECT_NAME}Config
-    NAMESPACE   SQLite::
-    DESTINATION cmake
-)
+if(SQLITE3_INSTALL)
+	install(EXPORT  ${PROJECT_NAME}Config
+		NAMESPACE   SQLite::
+		DESTINATION cmake
+	)
 
-install(FILES sqlite3.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(FILES sqlite3ext.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sqlite3)
+	install(FILES sqlite3.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	install(FILES sqlite3ext.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/sqlite3)
 
-if(NOT WIN32)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sqlite3.pc
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+	if(NOT WIN32)
+		install(FILES ${CMAKE_CURRENT_BINARY_DIR}/sqlite3.pc
+		DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+	endif()
 endif()
