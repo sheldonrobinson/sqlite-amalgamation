@@ -38,6 +38,7 @@ option(SQLITE3_OMIT_JSON                 "Omit JSON SQL functions"              
 option(SQLITE3_OMIT_AUTOINIT             "Omit automatic initialization"                  OFF)
 option(SQLITE3_RECOMMENDED_OPTIONS       "Compile by SQLite3 recommended options"         ON)
 option(SQLITE3_USE_URI                   "Enable the default URI filename processing"     OFF)
+option(SQLITE3_WIN32_USE_UUID            "Enable uuid type and method"     				  OFF)
 option(SQLITE3_INSTALL                   "Install applications and library"          	  OFF)
 if(WIN32)
     option(WIN32_MALLOC              "Use Windows Heap API functions for memory allocation" OFF)
@@ -319,6 +320,12 @@ endif()
 
 if(SQLITE3_ENABLE_SESSION)
     add_definitions(-DSQLITE_ENABLE_SESSION=1 -DSQLITE_ENABLE_PREUPDATE_HOOK=1)
+endif()
+
+if(SQLITE3_WIN32_USE_UUID)
+    add_definitions(-DSQLITE_WIN32_USE_UUID=1)
+else()
+	add_definitions(-DSQLITE_WIN32_USE_UUID=0)
 endif()
 
 if(SQLITE3_ENABLE_COLUMN_METADATA)
