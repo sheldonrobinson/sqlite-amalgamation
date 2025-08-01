@@ -322,12 +322,6 @@ if(SQLITE3_ENABLE_SESSION)
     add_definitions(-DSQLITE_ENABLE_SESSION=1 -DSQLITE_ENABLE_PREUPDATE_HOOK=1)
 endif()
 
-if(SQLITE3_WIN32_USE_UUID)
-    add_definitions(-DSQLITE_WIN32_USE_UUID=1)
-else()
-	add_definitions(-DSQLITE_WIN32_USE_UUID=0)
-endif()
-
 if(SQLITE3_ENABLE_COLUMN_METADATA)
     add_definitions(-DSQLITE_ENABLE_COLUMN_METADATA=1)
 endif()
@@ -405,10 +399,11 @@ add_definitions(
 if(WIN32)
     add_definitions(
         -DSQLITE_ENABLE_OFFSET_SQL_FUNC=1
-        -DSQLITE_ENABLE_BYTECODE_VTAB=1
-        -DSQLITE_WIN32_USE_UUID=1)
-
-    set(UUID_LIBRARIES Rpcrt4.lib)
+        -DSQLITE_ENABLE_BYTECODE_VTAB=1)
+	if(SQLITE3_WIN32_USE_UUID)
+		add_definitions(-DSQLITE_WIN32_USE_UUID=1)
+		set(UUID_LIBRARIES Rpcrt4.lib)
+	endif()
 endif()
 
 # Check the user defined sqlite config header file
