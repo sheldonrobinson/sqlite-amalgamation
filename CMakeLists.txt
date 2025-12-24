@@ -485,16 +485,18 @@ if(SQLITE3_ENABLE_SHARED)
     add_library(sqlite3-shared SHARED ${SQLITE3_LIB_SRC})
     target_compile_definitions(sqlite3-shared PRIVATE ${SQLITE_API_DECL})
     target_link_libraries(sqlite3-shared ${SQLITE3_DEP_LIBRARIES})
-    target_include_directories(sqlite3-shared PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
+    # target_include_directories(sqlite3-shared PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
     set_target_properties(sqlite3-shared PROPERTIES
         OUTPUT_NAME ${PROJECT_NAME}
         VERSION ${PROJECT_VERSION}
-        SOVERSION ${PROJECT_VERSION_MAJOR})
+        SOVERSION ${PROJECT_VERSION_MAJOR}
+		PUBLIC_HEADER sqlite3.h)
 	if(SQLITE3_INSTALL)
 		install(TARGETS sqlite3-shared EXPORT ${PROJECT_NAME}Config
 			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 			ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-			LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+			LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+			PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCDIR})
 		install(FILES ${CMAKE_BINARY_DIR}/${SHAREDLIB_PREFIX}${PROJECT_NAME}.pdb DESTINATION ${CMAKE_INSTALL_BINDIR} OPTIONAL)
 	endif()
 endif()
@@ -505,14 +507,16 @@ if(SQLITE3_ENABLE_STATIC)
     endif()
 
     add_library(sqlite3-static STATIC ${SQLITE3_LIB_SRC})
-    target_include_directories(sqlite3-static PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
+    # target_include_directories(sqlite3-static PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
     set_target_properties(sqlite3-static PROPERTIES
-        OUTPUT_NAME ${PROJECT_NAME}${NAME_FIX_DECORATOR})
+        OUTPUT_NAME ${PROJECT_NAME}${NAME_FIX_DECORATOR}
+		PUBLIC_HEADER sqlite3.h))
 	if(SQLITE3_INSTALL)
 		install(TARGETS sqlite3-static EXPORT ${PROJECT_NAME}Config
 			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 			ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-			LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+			LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+			PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCDIR})
 	endif()
 endif()
 
@@ -522,7 +526,7 @@ if(SQLITE3_BUILD_SHELL)
     if(SQLITE3_ENABLE_STATIC_SHELL)
         add_dependencies(sqlite3 sqlite3-static)
         target_link_libraries(sqlite3 sqlite3-static ${SQLITE3_DEP_LIBRARIES})
-        target_include_directories(sqlite3 PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
+        # target_include_directories(sqlite3 PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
     else()
         add_dependencies(sqlite3 sqlite3-shared)
         target_link_libraries(sqlite3 sqlite3-shared)
