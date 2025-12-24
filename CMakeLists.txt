@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.18)
 
 project(sqlite3
-    VERSION   3.50.3
+    VERSION   3.51.1
     LANGUAGES C
     HOMEPAGE_URL "http://www.sqlite.org"
 )
@@ -507,10 +507,10 @@ if(SQLITE3_ENABLE_STATIC)
     endif()
 
     add_library(sqlite3-static STATIC ${SQLITE3_LIB_SRC})
-    # target_include_directories(sqlite3-static PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
+    target_include_directories(sqlite3-static PUBLIC ${CMAKE_INSTALL_PREFIX}/include)
     set_target_properties(sqlite3-static PROPERTIES
         OUTPUT_NAME ${PROJECT_NAME}${NAME_FIX_DECORATOR}
-		PUBLIC_HEADER sqlite3.h))
+		PUBLIC_HEADER sqlite3.h)
 	if(SQLITE3_INSTALL)
 		install(TARGETS sqlite3-static EXPORT ${PROJECT_NAME}Config
 			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
